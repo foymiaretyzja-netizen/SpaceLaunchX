@@ -246,6 +246,85 @@
     </div>
 
     <script>
+        // --- SNAP SYSTEM MANAGER ---
+const SnapManager = {
+    // How close (in pixels) nodes need to be before they magnetically snap
+    SNAP_RADIUS: 15, 
+
+    /**
+     * Expected Asset Structure from your assets folder:
+     * {
+     * id: 'fuel_tank_m',
+     * x: 100, y: 100, width: 40, height: 80,
+     * nodes: [
+     * { type: 'top', offsetX: 20, offsetY: 0 },
+     * { type: 'bottom', offsetX: 20, offsetY: 80 }
+     * ]
+     * }
+     */
+
+    // 1. Get the real-world X/Y of a part's nodes based on its current position
+    getAbsoluteNodes: function(part) {
+        return part.nodes.map(node => ({
+            type: node.type,
+            x: part.x + node.offsetX,
+            y: part.y + node.offsetY
+        }));
+    },
+
+    // 2. Determine if two node types are compatible (e.g., 'top' goes to 'bottom')
+    canConnect: function(nodeTypeA, nodeTypeB) {
+        const rules = {
+            'top': 'bottom',
+            'bottom': 'top',
+            'left': 'right',
+            'right': 'left',
+            'surface': 'surface' // For radially attached parts like landing legs
+        };
+        return rules[nodeTypeA] === nodeTypeB;
+    },
+
+    // 3. The core function to run while the player is dragging a part
+    // Returns { deltaX, deltaY } to snap the part, or null if nothing is close enough
+    findBestSnap: function(draggedPart, placedParts) {
+        let bestSnap = null;
+        let minDistance = this.SNAP_RADIUS;
+
+        const dragNodes = this.getAbsoluteNodes(draggedPart);
+
+        // Check against every part already on the grid
+        for (const placed of placedParts) {
+            // Don't snap a part to itself
+            if (placed.id === draggedPart.id) continue;
+
+            const placedNodes = this.getAbsoluteNodes(placed);
+
+            // Compare every node on the dragged part to every node on the placed part
+            for (const dNode of dragNodes) {
+                for (const pNode of placedNodes) {
+                    
+                    if (this.canConnect(dNode.type, pNode.type)) {
+                        // Pythagorean theorem to find distance between the two points
+                        const dist = Math.hypot(dNode.x - pNode.x, dNode.y - pNode.y);
+                        
+                        if (dist < minDistance) {
+                            minDistance = dist;
+                            // Calculate exactly how many pixels to shift the dragged part
+                            // so that dNode perfectly overlaps pNode
+                            bestSnap = {
+                                snapTargetId: placed.id,
+                                dx: pNode.x - dNode.x,
+                                dy: pNode.y - dNode.y
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        
+        return bestSnap;
+    }
+};
         // --- GAME STATE & HANDSHAKE ---
         const STORAGE_KEY = 'spaceLaunchX_saves';
         let currentWorld = null;
