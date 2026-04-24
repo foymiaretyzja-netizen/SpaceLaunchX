@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpaceLaunchX</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>SpaceLaunch X</title>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- HIGH-ENERGY SPACE BACKGROUND & THEME --- */
+        /* --- HIGH PERFORMANCE BACKGROUND --- */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            /* Deep dark red fading into pitch black */
-            background: radial-gradient(ellipse at bottom, #2c0505 0%, #050000 100%);
+            background-color: #000;
             color: #ffffff;
             font-family: 'Roboto', sans-serif;
             overflow: hidden;
@@ -22,294 +21,293 @@
             align-items: center;
         }
 
-        h1, h2, h3 {
-            font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 15px rgba(255, 42, 42, 0.8);
-            text-align: center;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* --- STARS & ANIMATIONS --- */
-        #stars {
+        /* Canvas handles the stars with 0 lag */
+        #starfield {
             position: absolute;
-            top: 0; left: 0; 
-            width: 100vw; height: 100vh;
-            z-index: 1; /* Fixed visibility */
+            top: 0;
+            left: 0;
+            z-index: 1;
             pointer-events: none;
         }
-        
-        .twinkle {
-            animation: twinkle var(--duration) ease-in-out infinite alternate;
-        }
 
-        @keyframes twinkle {
-            0% { opacity: 0.1; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 5px #fff; }
-        }
-
-        .shooting-star {
-            position: absolute;
-            top: -50px;
-            left: -50px;
-            width: 200px;
-            height: 2px;
-            /* Fiery white and red trail */
-            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255, 255, 255, 1), rgba(255, 42, 42, 0.8), rgba(255,42,42,0));
-            transform: rotate(45deg);
-            animation: shoot 5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
-            z-index: 2;
-            opacity: 0;
-        }
-
-        @keyframes shoot {
-            0% { transform: translate(-50px, -50px) rotate(45deg); opacity: 0; }
-            5% { opacity: 1; }
-            15% { transform: translate(120vw, 120vh) rotate(45deg); opacity: 0; }
-            100% { opacity: 0; }
-        }
-
-        /* --- MENU ANIMATIONS --- */
-        @keyframes menuPopIn {
-            0% { opacity: 0; transform: scale(0.9) translateY(20px); filter: blur(5px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-        }
-
-        /* --- UI COMPONENTS --- */
-        .container {
-            background: rgba(15, 2, 2, 0.85); /* Dark tinted red/black */
-            border: 2px solid #ff2a2a;
-            border-radius: 12px;
-            padding: 45px;
-            width: 420px;
-            max-width: 90%;
-            box-shadow: 0 10px 30px rgba(255, 42, 42, 0.2), inset 0 0 15px rgba(255, 42, 42, 0.1);
-            backdrop-filter: blur(8px);
-            display: none; /* Hidden by default */
-            flex-direction: column;
-            gap: 20px;
+        /* --- UI CONTAINER & VIEWS --- */
+        .ui-layer {
             z-index: 10;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .view-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.3s ease-in-out;
+            width: 100%;
+            max-width: 400px;
         }
 
         .active-view {
             display: flex;
-            animation: menuPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- SFS STYLE TITLE --- */
         .title-main {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-            color: #ffffff;
-            text-shadow: 0 0 10px #ff2a2a, 0 0 20px #ff2a2a, 0 0 40px #ff2a2a;
+            font-family: 'Teko', sans-serif;
+            font-size: 5.5rem;
+            font-weight: 700;
+            line-height: 0.8;
+            margin-bottom: 50px;
+            text-align: center;
+            letter-spacing: 2px;
+            /* Metallic white-to-blue gradient */
+            background: linear-gradient(to bottom, #ffffff 0%, #e0eaf5 40%, #7ca1d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0px 4px 2px rgba(0,0,0,0.8));
+        }
+
+        /* --- SFS STYLE BUTTONS --- */
+        .button-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 4px; /* Tight stacking like the image */
+            width: 240px;
         }
 
         button {
-            background: transparent;
-            color: #ffffff;
-            border: 2px solid #ff2a2a;
-            padding: 15px;
-            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(to bottom, #2d3440 0%, #171b22 100%);
+            border: 1px solid #0a0c10;
+            border-radius: 4px;
+            color: #e6edf5;
+            padding: 10px 20px;
+            font-family: 'Roboto', sans-serif;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            border-radius: 6px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.4s ease;
-        }
-
-        button:hover::before {
-            left: 100%;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 4px 6px rgba(0,0,0,0.5);
+            transition: background 0.1s;
         }
 
         button:hover {
-            background: #ff2a2a;
-            color: #000000;
-            box-shadow: 0 0 20px #ff2a2a;
-            transform: translateY(-2px);
+            background: linear-gradient(to bottom, #3c4554 0%, #20262e 100%);
+            color: #ffffff;
         }
 
         button:active {
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
             transform: translateY(1px);
         }
 
-        button.secondary {
-            border-color: #666;
-            color: #ccc;
-            text-shadow: none;
-        }
-        
-        button.secondary:hover {
-            background: #e6e6e6;
-            color: #000;
-            box-shadow: 0 0 15px #ffffff;
-            border-color: #ffffff;
-        }
-
-        /* --- SAVE SLOTS --- */
-        .save-list {
-            max-height: 260px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            padding-right: 15px;
-        }
-
-        .save-list::-webkit-scrollbar { width: 6px; }
-        .save-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); border-radius: 3px; }
-        .save-list::-webkit-scrollbar-thumb { background: #ff2a2a; border-radius: 3px; }
-
-        .save-item {
-            background: linear-gradient(135deg, rgba(255, 42, 42, 0.1), rgba(0,0,0,0.5));
-            border-left: 4px solid #ff2a2a;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 0 6px 6px 0;
-            transition: transform 0.2s ease;
-        }
-
-        .save-item:hover {
-            transform: translateX(5px);
-            background: linear-gradient(135deg, rgba(255, 42, 42, 0.2), rgba(0,0,0,0.6));
-        }
-
-        .save-item h4 { 
-            margin: 0 0 5px 0; 
-            font-size: 1.3rem; 
-            color: #fff;
-            text-shadow: 0 0 5px #ff2a2a;
-        }
-        
-        .save-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .save-actions button {
-            padding: 10px;
-            font-size: 0.85rem;
-            flex: 1;
+        /* --- INPUTS & MENUS --- */
+        h2 {
+            font-family: 'Teko', sans-serif;
+            font-size: 2.5rem;
+            margin: 0 0 15px 0;
+            color: #e0eaf5;
         }
 
         input[type="text"] {
             width: 100%;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid #ff2a2a;
+            padding: 10px;
+            background: #171b22;
+            border: 1px solid #4a5a73;
             color: #fff;
             font-family: 'Roboto', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1rem;
             box-sizing: border-box;
-            border-radius: 6px;
+            border-radius: 4px;
             margin-bottom: 20px;
-            transition: all 0.3s ease;
+            text-align: center;
         }
         
         input:focus { 
             outline: none; 
-            box-shadow: 0 0 15px rgba(255, 42, 42, 0.6); 
-            background: rgba(20, 0, 0, 0.8);
+            border-color: #7ca1d4;
         }
 
-        p {
-            color: #ddd;
-            font-size: 1rem;
-            line-height: 1.5;
+        .save-list {
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .save-item {
+            background: #171b22;
+            border: 1px solid #2d3440;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .save-item h4 { margin: 0 0 5px 0; font-size: 1.1rem; }
+        .save-item p { margin: 0 0 10px 0; font-size: 0.75rem; color: #888; }
+        
+        .save-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .save-actions button {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.8rem;
+        }
+
+        p.text-content {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .footer-btn {
+            background: #171b22;
+            border: 1px solid #000;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            color: #ccc;
+        }
+        .footer-btn:hover { background: #2d3440; color: #fff; }
+        
+        .version {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.7rem;
+            color: #666;
+            z-index: 10;
+            text-align: right;
         }
     </style>
 </head>
 <body>
 
-    <div id="stars"></div>
-    <div class="shooting-star"></div>
+    <canvas id="starfield"></canvas>
 
-    <div id="main-menu" class="container active-view">
-        <h1 class="title-main">SpaceLaunchX</h1>
-        <button onclick="showView('new-game-menu')">New Game</button>
-        <button onclick="openLoadMenu()">Load Game</button>
-        <button class="secondary" onclick="showView('credits-menu')">Credits</button>
-    </div>
+    <div class="ui-layer">
+        <div class="title-main">
+            SPACELAUNCH<br>X
+        </div>
 
-    <div id="new-game-menu" class="container">
-        <h2>Mission Control</h2>
-        <p>Assign a codename to your new space agency:</p>
-        <input type="text" id="agency-name" placeholder="e.g. Ares Initiative" autocomplete="off">
-        <button onclick="createNewGame()">Initialize Agency</button>
-        <button class="secondary" onclick="showView('main-menu')">Abort (Back)</button>
-    </div>
-
-    <div id="load-game-menu" class="container">
-        <h2>Active Agencies</h2>
-        <div class="save-list" id="save-list-container">
+        <div id="main-menu" class="view-container active-view">
+            <div class="button-stack">
+                <button onclick="showView('new-game-menu')">New Game</button>
+                <button onclick="openLoadMenu()">Load Game</button>
+                <button onclick="showView('settings-menu')">Settings</button>
+                <button onclick="showView('credits-menu')">Credits</button>
+                <button onclick="alert('Exit not supported in browser.')">Exit</button>
             </div>
-        <button class="secondary" onclick="showView('main-menu')">Return to Base</button>
+        </div>
+
+        <div id="new-game-menu" class="view-container">
+            <h2>NEW GAME</h2>
+            <input type="text" id="agency-name" placeholder="World Name" autocomplete="off">
+            <div class="button-stack">
+                <button onclick="createNewGame()">Create</button>
+                <button onclick="showView('main-menu')">Back</button>
+            </div>
+        </div>
+
+        <div id="load-game-menu" class="view-container">
+            <h2>LOAD GAME</h2>
+            <div class="save-list" id="save-list-container">
+                </div>
+            <div class="button-stack" style="width: 100%;">
+                <button onclick="showView('main-menu')">Back</button>
+            </div>
+        </div>
+
+        <div id="settings-menu" class="view-container">
+            <h2>SETTINGS</h2>
+            <p class="text-content">Settings configuration coming soon.</p>
+            <div class="button-stack">
+                <button onclick="showView('main-menu')">Back</button>
+            </div>
+        </div>
+
+        <div id="credits-menu" class="view-container">
+            <h2>CREDITS</h2>
+            <p class="text-content">
+                <strong>SpaceLaunch X</strong><br>
+                A browser-based orbital simulator.<br><br>
+                Developer: [Your Name]
+            </p>
+            <div class="button-stack">
+                <button onclick="showView('main-menu')">Back</button>
+            </div>
+        </div>
     </div>
 
-    <div id="credits-menu" class="container">
-        <h2>Credits</h2>
-        <p style="text-align: center;">
-            <strong style="color: #ff2a2a; font-size: 1.2rem;">SpaceLaunchX</strong><br><br>
-            A browser-based space exploration and orbital mechanics game.<br><br>
-            Developed by <span style="color: #fff; font-weight: bold;">[Your Name Here]</span>.
-        </p>
-        <button class="secondary" onclick="showView('main-menu')">Back</button>
+    <div class="footer">
+        <div class="footer-btn">YouTube</div>
+        <div class="footer-btn">Reddit</div>
+        <div class="footer-btn">Discord</div>
+    </div>
+    <div class="version">
+        v1.0.0 - Alpha<br>(Browser Build)
     </div>
 
     <script>
-        // --- STAR BACKGROUND GENERATOR ---
-        function generateStars() {
-            const starsContainer = document.getElementById('stars');
-            // Increased star count and varied colors for life
-            for(let i = 0; i < 200; i++) {
-                let star = document.createElement('div');
-                star.style.position = 'absolute';
-                star.style.left = Math.random() * 100 + 'vw';
-                star.style.top = Math.random() * 100 + 'vh';
+        // --- 0-LAG CANVAS STARFIELD ---
+        function initStars() {
+            const canvas = document.getElementById('starfield');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#ffffff';
+            // Draw 400 static stars instantly
+            for(let i = 0; i < 400; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const size = Math.random() * 1.5;
+                const opacity = Math.random() * 0.8 + 0.2;
                 
-                let size = Math.random() * 3 + 'px';
-                star.style.width = size;
-                star.style.height = size;
-                
-                // Mix of pure white and slight reddish tint stars
-                const colors = ['#ffffff', '#ffffff', '#ffdddd', '#ffaaaa'];
-                star.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                star.style.borderRadius = '50%';
-                
-                // Add twinkle animation class with randomized durations
-                star.classList.add('twinkle');
-                star.style.setProperty('--duration', (Math.random() * 3 + 1) + 's');
-                
-                starsContainer.appendChild(star);
+                ctx.globalAlpha = opacity;
+                ctx.fillRect(x, y, size, size);
             }
         }
-        generateStars();
+        
+        // Resize canvas if window changes
+        window.addEventListener('resize', initStars);
+        initStars();
 
         // --- NAVIGATION LOGIC ---
         function showView(viewId) {
-            // Remove active class to hide all and reset animations
-            document.querySelectorAll('.container').forEach(el => {
+            document.querySelectorAll('.view-container').forEach(el => {
                 el.classList.remove('active-view');
             });
-            
-            // Force a reflow so the animation restarts smoothly
-            void document.getElementById(viewId).offsetWidth; 
-            
-            // Show the targeted view
             document.getElementById(viewId).classList.add('active-view');
             
-            // Clear inputs when navigating
             if(viewId === 'new-game-menu') {
                 document.getElementById('agency-name').value = '';
                 document.getElementById('agency-name').focus();
@@ -329,7 +327,7 @@
             const name = nameInput.value.trim();
 
             if (!name) {
-                alert("Mission aborted! Please enter a name for your space program.");
+                alert("Please enter a world name.");
                 return;
             }
 
@@ -338,13 +336,12 @@
                 id: 'save_' + Date.now(),
                 name: name,
                 createdAt: new Date().toLocaleString(),
-                gameData: { rocketsBuilt: 0, highestOrbit: 0 } 
+                gameData: { rocketsBuilt: 0 } 
             };
 
             saves.push(newSave);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(saves));
             
-            // Take user immediately to load menu
             openLoadMenu();
         }
 
@@ -354,19 +351,18 @@
             container.innerHTML = ''; 
 
             if (saves.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #888; margin-top: 20px;">No active space programs found. Start a new game.</p>';
+                container.innerHTML = '<p class="text-content">No worlds found.</p>';
             } else {
-                // Sort so newest saves are at the top
                 saves.slice().reverse().forEach(save => {
                     const saveBlock = document.createElement('div');
                     saveBlock.className = 'save-item';
                     
                     saveBlock.innerHTML = `
                         <h4>${save.name}</h4>
-                        <p style="font-size: 0.8rem; color: #aaa; margin: 0;">Established: ${save.createdAt}</p>
+                        <p>${save.createdAt}</p>
                         <div class="save-actions">
-                            <button onclick="playGame('${save.id}')">Launch</button>
-                            <button class="secondary" onclick="downloadData('${save.id}')">Export Data</button>
+                            <button onclick="playGame('${save.id}')">Play</button>
+                            <button onclick="downloadData('${save.id}')">Backup</button>
                         </div>
                     `;
                     container.appendChild(saveBlock);
@@ -377,13 +373,7 @@
 
         function playGame(saveId) {
             localStorage.setItem('spaceLaunchX_activeSaveId', saveId);
-            // Visual feedback before transition
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.5s ease';
-            
-            setTimeout(() => {
-                window.location.href = 'Builder.html';
-            }, 500);
+            window.location.href = 'Builder.html';
         }
 
         function downloadData(saveId) {
@@ -398,7 +388,7 @@
             
             const a = document.createElement('a');
             a.href = url;
-            a.download = `SpaceLaunchX_${saveToDownload.name.replace(/\s+/g, '_')}_Backup.json`;
+            a.download = `${saveToDownload.name}_Backup.json`;
             document.body.appendChild(a);
             a.click();
             
