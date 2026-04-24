@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpaceLaunch X - VAB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #171b22; color: #fff;
+            font-family: 'Roboto', sans-serif;
+            display: flex; flex-direction: column;
+        }
+
+        /* --- UI TOP BAR --- */
+        .top-bar {
+            background: #0a0c10;
+            border-bottom: 2px solid #2d3440;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .world-info { font-family: 'Teko', sans-serif; font-size: 1.8rem; letter-spacing: 1px; color: #7ca1d4;}
+        
+        button {
+            background: #2d3440; border: 1px solid #4a5a73; color: #fff;
+            padding: 8px 15px; cursor: pointer; border-radius: 4px; font-weight: bold;
+        }
+        button:hover { background: #3c4554; }
+
+        /* --- BUILDER AREA --- */
+        .workspace {
+            flex: 1; position: relative;
+            /* Simple blueprint grid background */
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            overflow: hidden;
+        }
+
+        /* Mock CSS for a placed part */
+        .rocket-part {
+            position: absolute;
+            background: #e0eaf5;
+            border: 2px solid #555;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: grab;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="world-info">
+            World: <span id="display-world-name">Loading...</span>
+        </div>
+        <div>
+            <button onclick="addMockPart()">+ Add Fuel Tank</button>
+            <button onclick="saveAndExit()">Save & Exit</button>
+        </div>
+    </div>
+
+    <div class="workspace" id="grid">
+        </div>
+
+    <script>
+        // --- STATE MANAGEMENT ---
+        const STORAGE_KEY = 'spaceLaunchX_saves';
+        let currentWorld = null;
+        let allSaves = [];
+
+        // 1. Initialize the Builder
+        function initBuilder() {
+            const activeSaveId = localStorage.getItem('spaceLaunchX_activeSaveId');
+            
+            // Security check: If someone opens Builder.html directly without a save, kick them back.
+            if (!activeSaveId) {
+                alert("No active world found. Returning to Main Menu.");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Load all saves and find the active one
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            allSaves = savedData ? JSON.parse(savedData) : [];
+            currentWorld = allSaves.find(save => save.id === activeSaveId);
+
+            if (!currentWorld) {
+                alert("World data corrupted. Returning to Main Menu.");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Update UI with World Name
+            document.getElementById('display-world-name').innerText = currentWorld.name;
+
+            // Ensure the world has a blueprint array
+            if (!currentWorld.gameData.currentBlueprint) {
+                currentWorld.gameData.currentBlueprint = [];
+            }
+
+            // Render whatever was already saved in this world
+            renderBlueprint();
+        }
+
+        // 2. Render the blueprint to the screen
+        function renderBlueprint() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = ''; // Clear grid
+
+            currentWorld.gameData.currentBlueprint.forEach(part => {
+                const partEl = document.createElement('div');
+                partEl.className = 'rocket-part';
+                partEl.innerText = part.type;
+                
+                // Apply saved coordinates and sizes
+                partEl.style.left = part.x + 'px';
+                partEl.style.top = part.y + 'px';
+                partEl.style.width = part.width + 'px';
+                partEl.style.height = part.height + 'px';
+                
+                grid.appendChild(partEl);
+            });
+        }
+
+        // 3. Add a part (Simulation of drag & drop)
+        function addMockPart() {
+            const newPart = {
+                id: 'part_' + Date.now(),
+                type: 'Fuel Tank',
+                x: Math.floor(Math.random() * 300) + 100, // Random X for testing
+                y: Math.floor(Math.random() * 300) + 100, // Random Y for testing
+                width: 60,
+                height: 120
+            };
+
+            // Add to our current world's memory
+            currentWorld.gameData.currentBlueprint.push(newPart);
+            
+            // Render it visually
+            renderBlueprint();
+            
+            // Save it to the hard drive (localStorage)
+            autoSave();
+        }
+
+        // 4. Save the current state back to LocalStorage
+        function autoSave() {
+            // Find the index of our current world in the main array
+            const worldIndex = allSaves.findIndex(s => s.id === currentWorld.id);
+            
+            // Overwrite the old world data with our updated currentWorld
+            allSaves[worldIndex] = currentWorld;
+            
+            // Push the entire array back into LocalStorage
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(allSaves));
+            console.log("Autosaved blueprint!");
+        }
+
+        // 5. Exit back to main menu
+        function saveAndExit() {
+            autoSave();
+            localStorage.removeItem('spaceLaunchX_activeSaveId'); // Clean up
+            window.location.href = 'index.html';
+        }
+
+        // Boot up the Builder when the page loads
+        window.onload = initBuilder;
+    </script>
+</body>
+</html>
