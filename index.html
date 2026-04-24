@@ -3,273 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpaceLaunchX - Main Menu</title>
+    <title>SpaceLaunchX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
     <style>
-        /* --- CORE STYLES --- */
+        /* --- SPACE BACKGROUND & THEME --- */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Prevents scrollbars */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: white;
-            background-color: #000; /* Fallback */
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            color: #ffffff;
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* --- SPACE BACKGROUND WITH ANIMATED STARS --- */
-        #space-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; /* Puts background behind UI */
-            background: radial-gradient(circle at center, #00172d 0%, #000000 100%);
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(0, 195, 255, 0.5);
+            text-align: center;
         }
 
-        /* Star Layers (creating depth) */
-        .stars {
+        /* --- STARS & ANIMATIONS --- */
+        #stars {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
-                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
-            background-size: 550px 550px, 350px 350px, 250px 250px;
-            background-position: 0 0, 40px 60px, 130px 270px;
-            animation: starFlicker 5s linear infinite;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: transparent;
+            z-index: -2;
         }
-
-        .stars.medium {
-            background-size: 400px 400px, 200px 200px, 150px 150px;
-            background-position: 50px 50px, 100px 100px, 200px 200px;
-            animation-duration: 7s;
-            opacity: 0.7;
-        }
-
-        .stars.far {
-            background-size: 300px 300px, 150px 150px, 100px 100px;
-            background-position: 75px 75px, 150px 150px, 250px 250px;
-            animation-duration: 10s;
-            opacity: 0.5;
-        }
-
-        @keyframes starFlicker {
-            0% { opacity: 0.8; }
-            50% { opacity: 0.4; }
-            100% { opacity: 0.8; }
-        }
-
-        /* Shooting Star - Randomized by CSS nth-child */
+        
         .shooting-star {
             position: absolute;
-            top: 0;
-            left: -100px;
+            top: -50px;
+            left: -50px;
             width: 150px;
             height: 2px;
-            background: linear-gradient(-45deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
-            filter: drop-shadow(0 0 6px white);
-            animation: shootingStarAnim 10s linear infinite;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1), rgba(255,255,255,0));
+            transform: rotate(45deg);
+            animation: shoot 7s linear infinite;
+            z-index: -1;
             opacity: 0;
         }
 
-        .shooting-star:nth-child(1) { top: 10%; animation-delay: 2s; animation-duration: 12s; }
-        .shooting-star:nth-child(2) { top: 30%; animation-delay: 7s; animation-duration: 8s; }
-        .shooting-star:nth-child(3) { top: 60%; animation-delay: 15s; animation-duration: 15s; }
-
-        @keyframes shootingStarAnim {
-            0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 0; }
-            1% { opacity: 1; }
-            10% { transform: translateX(120vw) translateY(120vh) rotate(-45deg); opacity: 0; }
-            100% { transform: translateX(120vw) translateY(120vh) rotate(-45deg); opacity: 0; }
+        @keyframes shoot {
+            0% { transform: translate(-50px, -50px) rotate(45deg); opacity: 0; }
+            10% { opacity: 1; }
+            20% { transform: translate(120vw, 120vh) rotate(45deg); opacity: 0; }
+            100% { opacity: 0; }
         }
 
-        /* --- MAIN MENU UI STRUCTURE --- */
-        #main-menu-lyr {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-        }
-
-        #menu-content {
-            background-color: rgba(0, 10, 20, 0.85); /* Semi-transparent panel */
-            padding: 50px;
+        /* --- UI COMPONENTS --- */
+        .container {
+            background: rgba(10, 15, 30, 0.85);
+            border: 2px solid #00c3ff;
             border-radius: 15px;
-            border: 2px solid #0056b3;
-            box-shadow: 0 0 30px rgba(0, 86, 179, 0.6);
-            text-align: center;
-            width: 400px;
-            backdrop-filter: blur(5px); /* Frosty glass effect */
-        }
-
-        #game-title {
-            font-size: 3em;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            color: white;
-            text-shadow: 0 0 10px #007bff, 0 0 20px #007bff;
-            margin-bottom: 50px;
-        }
-
-        #menu-buttons-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* --- ROBUST SFS-STYLE BUTTONS --- */
-        .menu-btn {
-            background: linear-gradient(180deg, #004085 0%, #002752 100%);
-            color: white;
-            border: 2px solid #0056b3;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Hover effect */
-        .menu-btn:hover {
-            background: linear-gradient(180deg, #0056b3 0%, #004085 100%);
-            box-shadow: 0 0 15px rgba(0, 123, 255, 0.8);
-            transform: scale(1.02);
-        }
-
-        /* Click effect */
-        .menu-btn:active {
-            transform: scale(0.98);
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
-        }
-
-        /* Decorative line under button text */
-        .menu-btn::after {
-            content: '';
-            position: absolute;
-            bottom: 5px;
-            left: 10%;
-            width: 80%;
-            height: 1px;
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-
-        /* --- CREDITS POPUP LAYER --- */
-        #popup-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            display: none; /* Hidden by default */
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        #credits-panel {
-            background-color: rgba(0, 10, 20, 1);
             padding: 40px;
-            border-radius: 10px;
-            border: 2px solid #ffc107; /* Gold accent for credits */
-            box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
-            text-align: center;
-            width: 500px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 0 20px rgba(0, 195, 255, 0.2);
+            backdrop-filter: blur(5px);
+            display: none; /* Hidden by default, JS handles visibility */
+            flex-direction: column;
+            gap: 15px;
         }
 
-        #popup-layer h2 {
-            color: #ffc107;
-            margin-bottom: 20px;
+        .active-view {
+            display: flex;
         }
 
-        #close-credits {
-            margin-top: 30px;
-            background: linear-gradient(180deg, #555 0%, #222 100%);
-            border: 2px solid #777;
-        }
-        #close-credits:hover {
-            background: linear-gradient(180deg, #777 0%, #444 100%);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        .title-main {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #00c3ff;
         }
 
+        button {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #00c3ff;
+            padding: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background: #00c3ff;
+            color: #000;
+            box-shadow: 0 0 15px #00c3ff;
+        }
+
+        button.secondary {
+            border-color: #555;
+            color: #aaa;
+        }
+        button.secondary:hover {
+            background: #555;
+            color: #fff;
+            box-shadow: none;
+        }
+
+        /* --- SAVE SLOTS --- */
+        .save-list {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding-right: 10px;
+        }
+
+        .save-list::-webkit-scrollbar { width: 5px; }
+        .save-list::-webkit-scrollbar-track { background: #111; }
+        .save-list::-webkit-scrollbar-thumb { background: #00c3ff; }
+
+        .save-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .save-item h4 { margin: 0 0 10px 0; font-size: 1.2rem; }
+        
+        .save-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .save-actions button {
+            padding: 8px;
+            font-size: 0.8rem;
+            flex: 1;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #00c3ff;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        input:focus { outline: none; box-shadow: 0 0 10px rgba(0, 195, 255, 0.5); }
     </style>
 </head>
 <body>
 
-    <div id="space-container">
-        <div class="stars"></div>
-        <div class="stars medium"></div>
-        <div class="stars far"></div>
-        
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
+    <div id="stars"></div>
+    <div class="shooting-star"></div>
+
+    <div id="main-menu" class="container active-view">
+        <h1 class="title-main">SpaceLaunchX</h1>
+        <button onclick="showView('new-game-menu')">New Game</button>
+        <button onclick="openLoadMenu()">Load Game</button>
+        <button onclick="showView('credits-menu')">Credits</button>
     </div>
 
-    <div id="main-menu-lyr">
-        <div id="menu-content">
-            <div id="game-title">SpaceLaunchX</div>
-            
-            <div id="menu-buttons-container">
-                <button class="menu-btn" onclick="startNewGame()">Create New Game</button>
-                <button class="menu-btn" onclick="loadGame()">Load Game</button>
-                <button class="menu-btn" onclick="showCredits()">Credits</button>
+    <div id="new-game-menu" class="container">
+        <h2>Mission Control</h2>
+        <p>Assign a codename to your space program:</p>
+        <input type="text" id="agency-name" placeholder="e.g. Apollo Program" autocomplete="off">
+        <button onclick="createNewGame()">Create Space Agency</button>
+        <button class="secondary" onclick="showView('main-menu')">Back</button>
+    </div>
+
+    <div id="load-game-menu" class="container">
+        <h2>Saved Agencies</h2>
+        <div class="save-list" id="save-list-container">
             </div>
-        </div>
+        <button class="secondary" onclick="showView('main-menu')">Back to Main Menu</button>
     </div>
 
-    <div id="popup-layer">
-        <div id="credits-panel">
-            <h2>SpaceLaunchX Credits</h2>
-            <p><strong>Game Concept:</strong> Inspired by SFS</p>
-            <p><strong>Development:</strong> Your Name / Your Team</p>
-            <p><strong>Background & UI:</strong> Generative AI Assistance</p>
-            <p>built with HTML, CSS, & JavaScript</p>
-            <button class="menu-btn" id="close-credits" onclick="hideCredits()">Close</button>
-        </div>
+    <div id="credits-menu" class="container">
+        <h2>Credits</h2>
+        <p style="text-align: center; line-height: 1.6;">
+            <strong>SpaceLaunchX</strong><br>
+            A browser-based space exploration game.<br>
+            Developed by <em>[Your Name Here]</em>.
+        </p>
+        <button class="secondary" onclick="showView('main-menu')">Back</button>
     </div>
 
     <script>
-        // Use standard SFS flow: button clicks start functions.
-        
-        function startNewGame() {
-            alert("Create New Game requested. This is where you will initialize a new universe!");
-            // flow: hide menu, show game canvas
-        }
-
-        function loadGame() {
-            alert("Load Game requested. Check LocalStorage or server for saves.");
-        }
-
-        // Show/Hide Credits Popup
-        const popupLayer = document.getElementById('popup-layer');
-
-        function showCredits() {
-            popupLayer.style.display = 'flex';
-        }
-
-        function hideCredits() {
-            popupLayer.style.display = 'none';
-        }
-
-        // Close credits if user clicks outside the panel
-        popupLayer.addEventListener('click', function(event) {
-            if (event.target === popupLayer) {
-                hideCredits();
+        // --- STAR BACKGROUND GENERATOR ---
+        function generateStars() {
+            const starsContainer = document.getElementById('stars');
+            for(let i = 0; i < 150; i++) {
+                let star = document.createElement('div');
+                star.style.position = 'absolute';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                let size = Math.random() * 2.5 + 'px';
+                star.style.width = size;
+                star.style.height = size;
+                star.style.backgroundColor = 'white';
+                star.style.borderRadius = '50%';
+                star.style.opacity = Math.random();
+                starsContainer.appendChild(star);
             }
-        });
+        }
+        generateStars();
+
+        // --- NAVIGATION LOGIC ---
+        function showView(viewId) {
+            document.querySelectorAll('.container').forEach(el => el.classList.remove('active-view'));
+            document.getElementById(viewId).classList.add('active-view');
+            
+            // Clear inputs when navigating
+            if(viewId === 'new-game-menu') document.getElementById('agency-name').value = '';
+        }
+
+        // --- GAME SAVE LOGIC ---
+        const STORAGE_KEY = 'spaceLaunchX_saves';
+
+        function getSaves() {
+            const saves = localStorage.getItem(STORAGE_KEY);
+            return saves ? JSON.parse(saves) : [];
+        }
+
+        function createNewGame() {
+            const nameInput = document.getElementById('agency-name');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                alert("Please enter a name for your space program!");
+                return;
+            }
+
+            const saves = getSaves();
+            const newSave = {
+                id: 'save_' + Date.now(),
+                name: name,
+                createdAt: new Date().toLocaleString(),
+                // Add initial game state payload here in the future
+                gameData: { rocketsBuilt: 0, highestOrbit: 0 } 
+            };
+
+            saves.push(newSave);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(saves));
+            
+            // Take user immediately to load menu to see their new save
+            openLoadMenu();
+        }
+
+        function openLoadMenu() {
+            const saves = getSaves();
+            const container = document.getElementById('save-list-container');
+            container.innerHTML = ''; // Clear current
+
+            if (saves.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #aaa;">No active space programs found.</p>';
+            } else {
+                saves.forEach(save => {
+                    const saveBlock = document.createElement('div');
+                    saveBlock.className = 'save-item';
+                    
+                    saveBlock.innerHTML = `
+                        <h4>${save.name}</h4>
+                        <p style="font-size: 0.8rem; color: #888; margin: 0 0 10px 0;">Created: ${save.createdAt}</p>
+                        <div class="save-actions">
+                            <button onclick="playGame('${save.id}')">Play</button>
+                            <button class="secondary" onclick="downloadData('${save.id}')">Download my Data</button>
+                        </div>
+                    `;
+                    container.appendChild(saveBlock);
+                });
+            }
+            showView('load-game-menu');
+        }
+
+        function playGame(saveId) {
+            // Store which save we are currently playing in Session/Local storage
+            // so Builder.html knows which data to load and overwrite
+            localStorage.setItem('spaceLaunchX_activeSaveId', saveId);
+            
+            // Redirect to the builder screen
+            window.location.href = 'Builder.html';
+        }
+
+        function downloadData(saveId) {
+            const saves = getSaves();
+            const saveToDownload = saves.find(s => s.id === saveId);
+            
+            if(!saveToDownload) return;
+
+            // Convert save data to formatted JSON string
+            const dataStr = JSON.stringify(saveToDownload, null, 2);
+            
+            // Create a Blob and invisible download link
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `SpaceLaunchX_${saveToDownload.name.replace(/\s+/g, '_')}_Backup.json`;
+            document.body.appendChild(a);
+            a.click();
+            
+            // Cleanup
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
     </script>
 </body>
 </html>
